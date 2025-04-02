@@ -3315,12 +3315,20 @@ def load(operator, context, filepath="",
             fbx_obj, blen_data = fbx_item
             if fbx_obj.id != b'Video':
                 continue
-            fbx_item[1] = blen_read_texture_image(fbx_tmpl_img, fbx_obj, basedir, settings)
+            try:
+                fbx_item[1] = blen_read_texture_image(fbx_tmpl_img, fbx_obj, basedir, settings)
+            except FileNotFoundError as e:
+                fbx_item[1] = None
+                print(f"Warning: Failed to load image for Video node {fbx_uuid}")
         for fbx_uuid, fbx_item in fbx_table_nodes.items():
             fbx_obj, blen_data = fbx_item
             if fbx_obj.id != b'Texture':
                 continue
-            fbx_item[1] = blen_read_texture_image(fbx_tmpl_tex, fbx_obj, basedir, settings)
+            try:
+                fbx_item[1] = blen_read_texture_image(fbx_tmpl_tex, fbx_obj, basedir, settings)
+            except FileNotFoundError as e:
+                fbx_item[1] = None
+                print(f"Warning: Failed to load texture for Texture node {fbx_uuid}")
     _()
     del _
 
